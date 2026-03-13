@@ -1,4 +1,4 @@
-import { GoogleGenAI, SchemaType } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { Task } from "../types";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -114,29 +114,29 @@ export async function analyzeDroneFeed(
       config: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: "OBJECT" as SchemaType,
+          type: Type.OBJECT,
           properties: {
-            type: { type: "STRING" as SchemaType },
+            type: { type: Type.STRING },
             priority: {
-              type: "STRING" as SchemaType,
+              type: Type.STRING,
               enum: ["low", "medium", "high", "critical"],
             },
-            victimCount: { type: "INTEGER" as SchemaType },
-            description: { type: "STRING" as SchemaType },
+            victimCount: { type: Type.INTEGER },
+            description: { type: Type.STRING },
             keywords: {
-              type: "ARRAY" as SchemaType,
-              items: { type: "STRING" as SchemaType },
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
             },
-            priorityScore: { type: "NUMBER" as SchemaType },
+            priorityScore: { type: Type.NUMBER },
             crowdDensity: {
-              type: "STRING" as SchemaType,
+              type: Type.STRING,
               enum: ["low", "medium", "high"],
             },
             hazards: {
-              type: "ARRAY" as SchemaType,
-              items: { type: "STRING" as SchemaType },
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
             },
-            missingPersonDetected: { type: "BOOLEAN" as SchemaType },
+            missingPersonDetected: { type: Type.BOOLEAN },
           },
           required: [
             "type",
