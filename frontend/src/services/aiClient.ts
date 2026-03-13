@@ -4,7 +4,7 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 export const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const PRIMARY_MODEL = import.meta.env.VITE_GEMINI_MODEL || "gemini-2.0-flash";
-export const FALLBACK_MODEL = import.meta.env.VITE_GEMINI_FALLBACK_MODEL || "gemini-1.5-flash-latest";
+export const FALLBACK_MODEL = import.meta.env.VITE_GEMINI_FALLBACK_MODEL || "gemini-1.5-flash-8b";
 
 export interface AIResponse {
   text: string;
