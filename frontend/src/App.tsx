@@ -15,7 +15,6 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 import { Drone, RescueTeam, Task, HazardZone, Activity, CameraSource, MissionEvent, CapturedPhoto, ReplayEvent, Facility } from './types';
-import RescueStatusChart from './components/RescueStatusChart';
 import { translations, Language } from './translations';
 import { chatWithAegis } from './services/aiChat';
 import StandaloneMapPage from './assets/map_module';
