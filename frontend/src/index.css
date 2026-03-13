@@ -28,13 +28,12 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  @apply transition-colors duration-300 antialiased;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  /* stylelint-disable-next-line at-rule-no-unknown */
+  @apply antialiased;
 }
-
-.bg-main { background-color: var(--bg-main); }
-.bg-card { background-color: var(--bg-card); }
-.text-main { color: var(--text-main); }
-.border-main { border-color: var(--border-main); }
 
 /* Leaflet Popup Dark Mode Support */
 .dark .leaflet-popup-content-wrapper,
