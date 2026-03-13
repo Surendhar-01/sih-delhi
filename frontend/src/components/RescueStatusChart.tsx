@@ -1,16 +1,7 @@
 import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Language } from '../translations';
-
-// Placeholder definitions to resolve missing module error
-export interface RescueStatusData {
-  [key: string]: any;
-}
-
-const buildRescueStatusOption = (data: RescueStatusData, lang: Language) => ({
-  title: { text: 'Rescue Status' },
-  series: []
-});
+import { buildRescueStatusOption, RescueStatusData } from '../modules/charts/rescueStatusOption';
 
 interface RescueStatusChartProps {
   data: RescueStatusData;
