@@ -1,10 +1,6 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { Type } from "@google/genai";
 import { Task } from "../types";
-
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
-const DEFAULT_GEMINI_MODEL =
-  import.meta.env.VITE_GEMINI_MODEL || "gemini-2.0-flash";
+import { ai, generateWithFallback } from "./aiClient";
 
 export interface AIDetectionResult {
   type: string;
@@ -17,10 +13,6 @@ export interface AIDetectionResult {
   hazards: string[];
   missingPersonDetected: boolean;
 }
-
-type GeminiContentPart =
-  | { text: string }
-  | { inlineData: { mimeType: string; data: string } };
 
 const FALLBACK_DETECTION: AIDetectionResult = {
   type: "Unknown",
@@ -74,43 +66,33 @@ export async function analyzeDroneFeed(
     return FALLBACK_DETECTION;
   }
 
-  const model = DEFAULT_GEMINI_MODEL;
-
   const prompt = `
-    Act as an Advanced Disaster Response AI. Analyze this drone footage capture and optional audio transcript.
+    Analyze drone footage situaton. Detect victims/hazards.
     
-    TASK:
-    1. Detect victims, hazards (fire, flood, structural collapse, smoke).
-    2. Estimate crowd density (low, medium, high).
-    3. Calculate a priority score (0-100) based on urgency, victim count, and hazard proximity.
-    4. Detect emergency keywords in transcript if provided.
-    5. Check for missing persons (simulated facial recognition context).
-    
-    Return a JSON object with:
-    - type: Primary emergency type (e.g., "Flood", "Fire", "Medical", "Crowd Crush")
-    - priority: "low", "medium", "high", or "critical"
-    - victimCount: estimated number of people
-    - description: concise situational report
-    - keywords: array of emergency words detected
-    - priorityScore: number 0-100
-    - crowdDensity: "low", "medium", or "high"
-    - hazards: array of detected hazards
+    Return JSON:
+    - type: Primary emergency
+    - priority: "low", "medium", "high", "critical"
+    - victimCount: number
+    - description: SITREP
+    - keywords: status words
+    - priorityScore: 0-100
+    - crowdDensity: "low", "medium", "high"
+    - hazards: list
     - missingPersonDetected: boolean
   `;
 
-  const parts: GeminiContentPart[] = [
+  const parts: any[] = [
     { text: prompt },
     { inlineData: { mimeType: "image/jpeg", data: base64Image } },
   ];
 
   if (audioTranscript) {
-    parts.push({ text: `Audio Transcript: ${audioTranscript}` });
+    parts.push({ text: `Audio: ${audioTranscript}` });
   }
 
   try {
-    const response = await ai.models.generateContent({
-      model,
-      contents: [{ role: "user", parts }],
+    const response = await generateWithFallback({
+      parts,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -167,18 +149,13 @@ export async function predictDisasterTrend(
     return "No trend detected.";
   }
 
-  const model = DEFAULT_GEMINI_MODEL;
   const prompt = `
-    Based on these recent rescue tasks: ${JSON.stringify(historicalTasks.slice(0, 5))}
-    Predict the potential spread or trend of the disaster (e.g., "Flood moving South-East", "Fire spreading to residential zone").
-    Provide a one-sentence prediction.
+    Recent tasks: ${JSON.stringify(historicalTasks.slice(0, 5))}
+    Predict spread/trend (one sentence).
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model,
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    });
+    const response = await generateWithFallback({ prompt });
     return response.text || "No trend detected.";
   } catch (error) {
     console.error("Gemini trend prediction failed:", error);
