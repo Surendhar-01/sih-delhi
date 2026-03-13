@@ -8,15 +8,23 @@ import { fileURLToPath } from "url";
 
 const PORT = Number(process.env.PORT ?? 3001);
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173";
-const ALLOWED_ORIGINS = new Set([
+const ALLOWED_ORIGINS = [
   FRONTEND_ORIGIN,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  "http://localhost:4173", // Vite preview port
-  "http://127.0.0.1:4173", // Vite preview port
-  "http://localhost:5174", // Vite dev port (fallback)
-  "http://localhost:5175", // Vite dev port (fallback)
-]);
+  "http://localhost:4173",
+  "http://127.0.0.1:4173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+];
+
+function isOriginAllowed(origin: string | undefined): boolean {
+  if (!origin) return true;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  // Allow Vercel preview URLs
+  if (origin.endsWith(".vercel.app")) return true;
+  return false;
+}
 const dbPath = path.resolve(process.cwd(), "rescue_prototype.db");
 const backendDir = path.dirname(fileURLToPath(import.meta.url));
 const sqlPath = path.resolve(backendDir, "database.sql");
@@ -29,7 +37,7 @@ async function startServer() {
   const io = new Server(httpServer, {
     cors: {
       origin: (origin, callback) => {
-        if (!origin || ALLOWED_ORIGINS.has(origin)) {
+        if (isOriginAllowed(origin)) {
           callback(null, true);
           return;
         }
@@ -296,9 +304,8 @@ async function startServer() {
 
   app.use((req, res, next) => {
     const reqOrigin = req.headers.origin;
-    const allowOrigin =
-      reqOrigin && ALLOWED_ORIGINS.has(reqOrigin) ? reqOrigin : FRONTEND_ORIGIN;
-    res.header("Access-Control-Allow-Origin", allowOrigin);
+    const allowOrigin = isOriginAllowed(reqOrigin) ? reqOrigin : FRONTEND_ORIGIN;
+    res.header("Access-Control-Allow-Origin", allowOrigin || FRONTEND_ORIGIN);
     res.header("Access-Control-Allow-Methods", "GET,POST,PATCH,OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     if (req.method === "OPTIONS") {

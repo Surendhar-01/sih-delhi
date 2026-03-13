@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "tsx server.ts",
+    "start": "node dist/server.js",
     "dev": "tsx server.ts",
     "kill": "npx --yes kill-port 3001",
-    "build": "tsc --noEmit"
+    "build": "tsc"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
