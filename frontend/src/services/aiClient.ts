@@ -73,10 +73,12 @@ export async function generateWithFallback(
 }
 
 function isRetryableError(error: any): boolean {
-  const msg = (error?.message || "").toLowerCase();
-  const status = (error?.status || "").toUpperCase();
+  if (!error) return false;
+
+  const msg = String(error.message || "").toLowerCase();
+  const status = String(error.status || "").toUpperCase();
   
-  // 429 (Quota), 404 (Not Found - often means model ID changed), 503 (Unavailable)
+  // 429 (Quota), 404 (Not Found), 503 (Unavailable)
   return (
     msg.includes("429") || 
     msg.includes("404") || 
