@@ -29,63 +29,54 @@ export async function generateWithFallback(
   }
 ): Promise<AIResponse> {
   if (!ai) {
-    throw new Error("AI capabilities are offline. Please configure VITE_GEMINI_API_KEY.");
+    throw new Error("AI capabilities are offline. Please configure VITE_GEMINI_API_KEY. [v2]");
   }
 
   const { prompt, parts, config } = options;
   const contents = parts ? [{ role: "user", parts }] : [{ role: "user", parts: [{ text: prompt || "" }] }];
 
-  // 1. Attempt Primary Model
-  try {
-    const result = await ai.models.generateContent({
-      model: PRIMARY_MODEL,
-      contents,
-      config,
-    });
-    return { text: result.text || "", modelUsed: PRIMARY_MODEL, isFallback: false };
-  } catch (error: any) {
-    if (!isRetryableError(error)) throw error;
-    console.warn(`AI Primary Model (${PRIMARY_MODEL}) failed. Error: ${error.status || error.message}. Retrying with fallbacks...`);
-  }
+  const attempts = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+  let lastError: any = null;
 
-  // 2. Attempt Fallbacks in sequence
-  for (const modelName of FALLBACK_MODELS) {
-    if (modelName === PRIMARY_MODEL) continue;
-    
+  for (const modelName of attempts) {
     try {
       const result = await ai.models.generateContent({
         model: modelName,
         contents,
         config,
       });
-      console.info(`Success with fallback model: ${modelName}`);
-      return { text: result.text || "", modelUsed: modelName, isFallback: true };
-    } catch (fallbackError: any) {
-      if (!isRetryableError(fallbackError)) {
-        console.error(`Fallback model ${modelName} failed with non-retryable error:`, fallbackError);
-      } else {
-        console.warn(`Fallback model ${modelName} failed/throttled. Trying next...`);
-      }
+      return { 
+        text: result.text || "", 
+        modelUsed: modelName, 
+        isFallback: modelName !== attempts[0] 
+      };
+    } catch (err: any) {
+      lastError = err;
+      if (!isRetryableError(err)) break;
+      console.warn(`AI Model ${modelName} failed/throttled. Trying next...`);
     }
   }
 
-  throw new Error("AI system is currently overloaded across all available models. Please try again in 60s.");
+  const errorMsg = lastError?.message || "AI system overloaded";
+  throw new Error(`${errorMsg} (All models exhausted) [v2]`);
 }
 
 function isRetryableError(error: any): boolean {
   if (!error) return false;
 
   const msg = String(error.message || "").toLowerCase();
-  const status = String(error.status || "").toUpperCase();
+  const status = error.status; 
+  const statusStr = typeof status === 'string' ? status.toUpperCase() : String(status || "");
   
-  // 429 (Quota), 404 (Not Found), 503 (Unavailable)
   return (
     msg.includes("429") || 
     msg.includes("404") || 
     msg.includes("quota") || 
     msg.includes("not found") ||
-    status === "RESOURCE_EXHAUSTED" ||
-    status === "NOT_FOUND" ||
-    status === "UNAVAILABLE"
+    statusStr === "RESOURCE_EXHAUSTED" ||
+    statusStr === "NOT_FOUND" ||
+    statusStr === "UNAVAILABLE" ||
+    status === 429 ||
+    status === 404
   );
 }
