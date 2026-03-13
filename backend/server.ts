@@ -26,8 +26,7 @@ function isOriginAllowed(origin: string | undefined): boolean {
   return false;
 }
 const dbPath = path.resolve(process.cwd(), "rescue_prototype.db");
-const backendDir = path.dirname(fileURLToPath(import.meta.url));
-const sqlPath = path.resolve(backendDir, "database.sql");
+const sqlPath = path.resolve(process.cwd(), "database.sql");
 const db = new Database(dbPath);
 db.exec(fs.readFileSync(sqlPath, "utf8"));
 
