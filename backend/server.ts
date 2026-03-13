@@ -302,7 +302,7 @@ async function startServer() {
     },
   };
 
-  app.use((req, res, next) => {
+  app.use((req: any, res: any, next: any) => {
     const reqOrigin = req.headers.origin;
     const allowOrigin = isOriginAllowed(reqOrigin) ? reqOrigin : FRONTEND_ORIGIN;
     res.header("Access-Control-Allow-Origin", allowOrigin || FRONTEND_ORIGIN);
@@ -317,7 +317,7 @@ async function startServer() {
 
   app.use(express.json({ limit: "50mb" }));
 
-  app.get("/", (req, res) => {
+  app.get("/", (req: any, res: any) => {
     res.json({
       service: "rescue-backend",
       status: "ok",
@@ -327,15 +327,15 @@ async function startServer() {
     });
   });
 
-  app.get("/health", (req, res) => {
+  app.get("/health", (req: any, res: any) => {
     res.json({ status: "ok" });
   });
 
-  app.get("/swagger.json", (req, res) => {
+  app.get("/swagger.json", (req: any, res: any) => {
     res.json(openApiSpec);
   });
 
-  app.get("/docs", (req, res) => {
+  app.get("/docs", (req: any, res: any) => {
     res.type("html").send(`
 <!doctype html>
 <html>
@@ -361,7 +361,7 @@ async function startServer() {
 </html>`);
   });
 
-  app.post("/api/auth/login", (req, res) => {
+  app.post("/api/auth/login", (req: any, res: any) => {
     const { email, password } = req.body;
     const user = db
       .prepare("SELECT * FROM users WHERE email = ? AND password = ?")
@@ -382,10 +382,10 @@ async function startServer() {
     }
   });
 
-  app.get("/api/drones", (req, res) =>
+  app.get("/api/drones", (req: any, res: any) =>
     res.json(db.prepare("SELECT * FROM drones").all()),
   );
-  app.post("/api/drones", (req, res) => {
+  app.post("/api/drones", (req: any, res: any) => {
     const { name, model, lat, lng, capabilities } = req.body;
     const id = `DR-${Date.now()}`;
     db.prepare(
@@ -401,7 +401,7 @@ async function startServer() {
     io.emit("drones_update", db.prepare("SELECT * FROM drones").all());
     res.json({ success: true, id });
   });
-  app.patch("/api/drones/:id", (req, res) => {
+  app.patch("/api/drones/:id", (req: any, res: any) => {
     const { id } = req.params;
     const { status } = req.body;
     db.prepare("UPDATE drones SET status = ? WHERE id = ?").run(status, id);
@@ -409,10 +409,10 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  app.get("/api/teams", (req, res) =>
+  app.get("/api/teams", (req: any, res: any) =>
     res.json(db.prepare("SELECT * FROM rescue_teams").all()),
   );
-  app.get("/api/tasks", (req, res) =>
+  app.get("/api/tasks", (req: any, res: any) =>
     res.json(
       db
         .prepare(
@@ -421,10 +421,10 @@ async function startServer() {
         .all(),
     ),
   );
-  app.get("/api/hazards", (req, res) =>
+  app.get("/api/hazards", (req: any, res: any) =>
     res.json(db.prepare("SELECT * FROM hazard_zones").all()),
   );
-  app.post("/api/hazards", (req, res) => {
+  app.post("/api/hazards", (req: any, res: any) => {
     const { type, lat, lng, radius, severity } = req.body;
     const id = `HZ-${Date.now()}`;
     db.prepare(
@@ -432,17 +432,17 @@ async function startServer() {
     ).run(id, type, lat, lng, radius || 500, severity || "medium");
     res.json({ success: true, id });
   });
-  app.delete("/api/hazards/:id", (req, res) => {
+  app.delete("/api/hazards/:id", (req: any, res: any) => {
     const { id } = req.params;
     db.prepare("DELETE FROM hazard_zones WHERE id = ?").run(id);
     res.json({ success: true });
   });
 
-  app.get("/api/facilities", (req, res) =>
+  app.get("/api/facilities", (req: any, res: any) =>
     res.json(db.prepare("SELECT * FROM facilities").all()),
   );
 
-  app.get("/api/system/health", (req, res) => {
+  app.get("/api/system/health", (req: any, res: any) => {
     res.json({
       uptime: process.uptime(),
       status: "operational",
@@ -451,7 +451,7 @@ async function startServer() {
     });
   });
 
-  app.get("/api/stats", (req, res) => {
+  app.get("/api/stats", (req: any, res: any) => {
     const drones = db
       .prepare(
         "SELECT COUNT(*) as total, SUM(CASE WHEN status='active' THEN 1 ELSE 0 END) as active FROM drones",
@@ -470,7 +470,7 @@ async function startServer() {
     res.json({ drones, teams, tasks });
   });
 
-  app.get("/api/map-data", (req, res) => {
+  app.get("/api/map-data", (req: any, res: any) => {
     res.json({
       drones: db.prepare("SELECT * FROM drones").all(),
       teams: db.prepare("SELECT * FROM rescue_teams").all(),
@@ -483,7 +483,7 @@ async function startServer() {
       facilities: db.prepare("SELECT * FROM facilities").all(),
     });
   });
-  app.get("/api/notifications", (req, res) =>
+  app.get("/api/notifications", (req: any, res: any) =>
     res.json(
       db
         .prepare("SELECT * FROM notifications ORDER BY timestamp DESC LIMIT 20")
@@ -491,7 +491,7 @@ async function startServer() {
     ),
   );
 
-  app.post("/api/simulate/detection", (req, res) => {
+  app.post("/api/simulate/detection", (req: any, res: any) => {
     const { drone_id } = req.body;
     const drone = db
       .prepare("SELECT * FROM drones WHERE id = ?")
@@ -543,7 +543,7 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  app.patch("/api/tasks/:id", (req, res) => {
+  app.patch("/api/tasks/:id", (req: any, res: any) => {
     const { status } = req.body;
     const { id } = req.params;
     const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(id) as any;
@@ -563,7 +563,7 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  app.post("/api/tasks/:id/dispatch", (req, res) => {
+  app.post("/api/tasks/:id/dispatch", (req: any, res: any) => {
     const { id } = req.params;
     const { team_id } = req.body as { team_id?: string };
 
@@ -617,7 +617,7 @@ async function startServer() {
     res.json({ success: true, task: updatedTask, team_id });
   });
 
-  app.post("/api/tasks/:id/supply-drop", (req, res) => {
+  app.post("/api/tasks/:id/supply-drop", (req: any, res: any) => {
     const { id } = req.params;
     const { drone_id } = req.body as { drone_id?: string };
 
@@ -674,7 +674,7 @@ async function startServer() {
     res.json({ success: true, task_id: id, drone_id });
   });
 
-  app.get("/api/reports/export", (req, res) => {
+  app.get("/api/reports/export", (req: any, res: any) => {
     const tasks = db.prepare("SELECT * FROM tasks").all() as any[];
     const csv = [
       "ID,Type,Priority,Status,Victims,Lat,Lng,Created",
