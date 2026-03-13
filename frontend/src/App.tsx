@@ -1592,8 +1592,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-gray-900 dark:text-white font-sans selection:bg-emerald-500/30 transition-colors bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-emerald-500/5 via-slate-50 to-slate-100 dark:from-emerald-900/10 dark:via-[#050505] dark:to-[#050505]">
-      <nav className="fixed left-0 top-0 bottom-0 w-24 bg-white/70 dark:bg-[#121214]/70 backdrop-blur-2xl border-r border-gray-200/50 dark:border-white/5 flex flex-col items-center py-8 gap-8 z-50 transition-colors">
+    <div className="min-h-screen bg-main text-main font-sans selection:bg-emerald-500/30 transition-colors">
+      <nav className="fixed left-0 top-0 bottom-0 w-24 bg-white/70 dark:bg-[#121214]/70 backdrop-blur-2xl border-r border-main flex flex-col items-center py-8 gap-8 z-50 transition-colors">
         <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20"><Shield className="text-white" size={24} /></div>
         <div className="flex flex-col gap-4">
           <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<BarChart3 size={20} />} label={t.dashboard} />
@@ -1610,8 +1610,8 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="pl-24 min-h-screen">
-        <header className="h-24 border-b border-gray-200/50 dark:border-white/5 flex items-center justify-between px-10 bg-white/50 dark:bg-[#050505]/50 backdrop-blur-xl sticky top-0 z-40 transition-colors">
+      <main className="pl-24 min-h-screen bg-main transition-colors">
+        <header className="h-24 border-b border-main flex items-center justify-between px-10 bg-white/50 dark:bg-[#050505]/50 backdrop-blur-xl sticky top-0 z-40 transition-colors">
           <div>
             <h1 className="text-2xl font-bold tracking-tight uppercase bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-500 bg-clip-text text-transparent">{t.appTitle}</h1>
             <p className="text-xs text-gray-500 dark:text-white/40 uppercase tracking-widest mt-0.5">{t.roleLabel}: {user.role} • {t.simulatedEnvironment}</p>
@@ -3109,18 +3109,18 @@ function CapabilityItem({ icon, label, detail, active, onClick }: { icon: React.
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={cn("min-w-0 rounded-2xl border p-4 transition-all cursor-pointer", active ? "border-emerald-400/30 bg-black/20 text-emerald-300" : "border-gray-200 dark:border-white/5 bg-white/50 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:bg-white/60 dark:hover:bg-white/10")}
+      className={cn("min-w-0 rounded-2xl border p-4 transition-all cursor-pointer", active ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300" : "border-main bg-white/50 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:bg-white/60 dark:hover:bg-white/10")}
     >
       <div className="flex items-start gap-3">
-        <div className={cn("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border", active ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-300" : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-white/40")}>
+        <div className={cn("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border", active ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300" : "border-main bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-white/40")}>
           {icon}
         </div>
         <div className="min-w-0">
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <span className="text-sm font-semibold leading-snug text-white">{label}</span>
-            {active && <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-emerald-300">Online</span>}
+            <span className="text-sm font-semibold leading-snug">{label}</span>
+            {active && <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">Online</span>}
           </div>
-          <p className="mt-1 text-[11px] leading-relaxed text-white/60 dark:text-white/45">{detail}</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-gray-500 dark:text-white/45">{detail}</p>
         </div>
       </div>
     </motion.div>
@@ -3131,7 +3131,7 @@ function NavButton({ icon, label, active, onClick }: { icon: React.ReactNode, la
   return (
     <button onClick={onClick} className={cn("w-12 h-12 rounded-2xl flex items-center justify-center transition-all group relative hover:scale-105 active:scale-95", active ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 ring-2 ring-emerald-500/20" : "text-gray-400 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white")}>
       {icon}
-      <span className="absolute left-full ml-4 px-3 py-1.5 bg-white/90 dark:bg-[#121214]/90 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 text-gray-900 dark:text-white shadow-xl">{label}</span>
+      <span className="absolute left-full ml-4 px-3 py-1.5 bg-white/90 dark:bg-[#121214]/90 backdrop-blur-md border border-main rounded-xl text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 text-main shadow-xl">{label}</span>
     </button>
   );
 }
@@ -3168,8 +3168,8 @@ function StatCard({ label, value, icon, trend, exportVariant }: { label: string,
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       initial={{ scale: 1 }}
-      whileHover={{ scale: 1.03, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.3)" }}
-      className="bg-white/60 dark:bg-[#121214]/60 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-[2rem] p-6 transition-colors shadow-lg shadow-slate-200/20 dark:shadow-black/20 group cursor-default"
+      whileHover={{ scale: 1.03, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.1)" }}
+      className="bg-white/60 dark:bg-[#121214]/60 backdrop-blur-xl border border-main rounded-[2rem] p-6 transition-colors shadow-lg shadow-slate-200/20 dark:shadow-black/20 group cursor-default"
     >
       <div style={{ transform: "translateZ(30px)" }} className="flex items-center justify-between mb-4"><div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-inner">{icon}</div><span className={cn("text-xs font-bold px-2 py-1 rounded-lg bg-white/50 dark:bg-white/5", trend.startsWith('+') ? "text-emerald-600 dark:text-emerald-400" : "text-red-500 dark:text-red-400")}>{trend}</span></div>
       <p style={{ transform: "translateZ(20px)" }} className="text-2xl font-bold mb-1">{value}</p>
