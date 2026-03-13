@@ -1,0 +1,9 @@
+{
+  "name": "Aegis Rescue: AI Disaster Management",
+  "description": "AI-powered disaster rescue monitoring system with drone feed analysis, automated task scheduling, and real-time command center.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

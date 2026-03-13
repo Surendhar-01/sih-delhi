@@ -1,0 +1,11 @@
+{
+  "recommendations": {
+    "unknownAtRules": "warning"
+  },
+  "lint": {
+    "compatibleVendorPrefixes": "warning",
+    "vendorPrefix": "warning",
+    "duplicateProperties": "ignore"
+  },
+  "validate": true
+}

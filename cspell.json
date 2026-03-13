@@ -1,0 +1,44 @@
+{
+  "version": "0.2",
+  "ignorePaths": [
+    "node_modules/**",
+    "package-lock.json",
+    "**/dist/**",
+    "**/build/**",
+    "**/translations.ts",
+    "**/types.ts",
+    "frontend/src/**",
+    "backend/src/**"
+  ],
+  "ignoreWords": [
+    "AUTOINCREMENT",
+    "genai",
+    "bodycam",
+    "Geofence",
+    "Glassmorphism",
+    "tailwindcss",
+    "antialiased",
+    "rgba",
+    "invert",
+    "hue",
+    "rotate",
+    "brightness",
+    "saturate",
+    "leaflet",
+    "lucide",
+    "recharts",
+    "echarts",
+    "googleapis",
+    "tsx",
+    "vite",
+    "pnpm",
+    "eslint"
+  ],
+  "words": [
+    "AUTOINCREMENT",
+    "Carto",
+    "CARTO",
+    "Multispectral",
+    "Evac"
+  ]
+}

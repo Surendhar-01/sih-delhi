@@ -1,0 +1,21 @@
+{
+  "name": "aegis-rescue-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install-all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
+    "start": "npm run start --workspace=backend",
+    "dev": "npm run dev --workspace=frontend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=frontend",
+    "build:all": "npm run build --workspace=frontend && npm run build --workspace=backend",
+    "preview": "npm run preview --workspace=frontend",
+    "clean": "rm -rf frontend/dist backend/dist"
+  }
+}

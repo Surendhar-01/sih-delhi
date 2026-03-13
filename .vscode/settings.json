@@ -1,0 +1,22 @@
+{
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    }
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "css.lint.unknownAtRules": "ignore",
+  "cSpell.ignoreWords": [
+    "genai",
+    "bodycam",
+    "Geofence",
+    "Glassmorphism"
+  ],
+  "cSpell.ignorePaths": [
+    "**/*translations*",
+    "node_modules/**"
+  ]
+}

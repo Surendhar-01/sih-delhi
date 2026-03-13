@@ -1,0 +1,9 @@
+{
+  "recommendations": false,
+  "validate": true,
+  "lint": {
+    "compatibleVendorPrefixes": "warning",
+    "vendorPrefix": "warning",
+    "duplicateProperties": "ignore"
+  }
+}
