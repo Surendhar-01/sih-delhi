@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Activity as ActivityIcon, Map as MapIcon, Shield, Users, AlertTriangle, Navigation, Camera, Mic, CheckCircle2, Clock, Battery, Wifi, Radio, ChevronRight, Plus, LogOut, Bell, Play, Pause, Download, Sun, Moon, Route, Languages, BarChart3, PieChart, LineChart as LineChartIcon, Settings, Maximize2, Zap, Thermometer, Eye, Volume2, Package, AlertCircle, Info, ZapOff, PlaneTakeoff, Video, UserPlus, Target, MapPin, MessageSquare, Bot, Send, X, Ruler, VolumeX, Scan, Fingerprint, ShieldCheck, Lock, Hospital, Tent, Signal, WifiOff, Server, Home, PauseCircle, PlayCircle, AlertOctagon, Cpu, Gauge
+  Activity as ActivityIcon, Map as MapIcon, Shield, Users, AlertTriangle, Navigation, Camera, Mic, CheckCircle2, Clock, Battery, Wifi, Radio, ChevronRight, Plus, LogOut, Bell, Play, Pause, Download, Sun, Moon, Route, Languages, BarChart3, PieChart, LineChart as LineChartIcon, Maximize2, Zap, Thermometer, Eye, Volume2, Package, AlertCircle, Info, ZapOff, PlaneTakeoff, Video, UserPlus, Target, MapPin, MessageSquare, Bot, Send, X, Ruler, VolumeX, Scan, Fingerprint, ShieldCheck, Lock, Hospital, Tent, Signal, WifiOff, Server, Home, PauseCircle, PlayCircle, AlertOctagon, Cpu, Gauge
 } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, AreaChart, Area, PieChart as RePieChart, Pie, Sector, ScatterChart, Scatter, ZAxis } from 'recharts';
@@ -91,7 +91,7 @@ export default function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activityFilter, setActivityFilter] = useState<'all' | 'drone' | 'team' | 'system' | 'battery'>('all');
   const [selectedDrone, setSelectedDrone] = useState<Drone | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'map' | 'tasks' | 'analytics' | 'drones' | 'reports' | 'settings' | 'photos'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'map' | 'tasks' | 'analytics' | 'drones' | 'reports' | 'photos'>('dashboard');
   const [isSimulating, setIsSimulating] = useState(false);
   const [triggerRoute, setTriggerRoute] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('theme') as 'light' | 'dark') || 'light');
@@ -131,8 +131,6 @@ export default function App() {
   const [aiMessages, setAiMessages] = useState<{ role: 'user' | 'ai', text: string }[]>([{ role: 'ai', text: 'AEGIS Command Assistant online. Awaiting orders.' }]);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [aiReport, setAiReport] = useState('');
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
 
   const t = translations[lang];
 
@@ -570,7 +568,7 @@ export default function App() {
         const randomCam = cameras[Math.floor(Math.random() * cameras.length)];
         if (randomCam) capturePhoto(randomCam);
       }
-    }, 10000);
+    }, 10 * 1000);
     return () => clearInterval(interval);
   }, [autoCaptureEnabled, user, cameras]);
 
@@ -1603,7 +1601,6 @@ export default function App() {
           <NavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<PieChart size={20} />} label={t.analytics} />
           <NavButton active={activeTab === 'photos'} onClick={() => setActiveTab('photos')} icon={<Camera size={20} />} label={t.photoGallery} />
           <NavButton active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} icon={<Download size={20} />} label={t.reports} />
-          <NavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<Settings size={20} />} label={t.settings} />
         </div>
         <div className="mt-auto flex flex-col gap-4">
           <button onClick={() => setUser(null)} className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 dark:hover:text-red-400 transition-colors text-gray-400 dark:text-white/40"><LogOut size={18} /></button>
@@ -2961,100 +2958,6 @@ export default function App() {
             </div>
           )}
 
-          {activeTab === 'settings' && (
-            <div className="grid grid-cols-1 gap-8 max-w-2xl">
-              <div className="bg-white/60 dark:bg-[#121214]/60 backdrop-blur-xl rounded-[2rem] border border-white/20 dark:border-white/5 p-8 transition-colors shadow-lg">
-                <h2 className="text-2xl font-bold mb-8">{t.settings}</h2>
-                <div className="space-y-8">
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">{t.systemTheme}</h3>
-                    <div className="flex gap-4">
-                      <button onClick={() => setTheme('light')} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", theme === 'light' ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <Sun size={20} /> {t.lightMode}
-                      </button>
-                      <button onClick={() => setTheme('dark')} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", theme === 'dark' ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <Moon size={20} /> {t.darkMode}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Notifications</h3>
-                    <div className="flex gap-4">
-                      <button onClick={() => setSoundEnabled(true)} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", soundEnabled ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <Volume2 size={20} /> Sound On
-                      </button>
-                      <button onClick={() => setSoundEnabled(false)} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", !soundEnabled ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <VolumeX size={20} /> Sound Off
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Units</h3>
-                    <div className="flex gap-4">
-                      <button onClick={() => setUnits('metric')} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", units === 'metric' ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <Ruler size={20} /> Metric
-                      </button>
-                      <button onClick={() => setUnits('imperial')} className={cn("flex-1 p-4 rounded-2xl border flex items-center justify-center gap-3 transition-all", units === 'imperial' ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                        <Ruler size={20} /> Imperial
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Field Operations</h3>
-                    <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-200 dark:border-white/5 bg-white/50 dark:bg-white/5">
-                      <div className="flex items-center gap-3">
-                        <WifiOff size={20} className={cn(isOfflineMode ? "text-amber-500" : "text-gray-400")} />
-                        <span className="text-sm font-medium">Offline Mode</span>
-                      </div>
-                      <button onClick={() => setIsOfflineMode(!isOfflineMode)} className={cn("w-10 h-6 rounded-full relative transition-all", isOfflineMode ? "bg-amber-500" : "bg-gray-300 dark:bg-white/10")}>
-                        <div className={cn("absolute top-1 w-4 h-4 bg-white rounded-full transition-all", isOfflineMode ? "left-5" : "left-1")} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">AI Security</h3>
-                    <div className="p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500">
-                          <Fingerprint size={20} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-gray-900 dark:text-white">Biometric Verification</p>
-                          <p className="text-xs text-emerald-600 dark:text-emerald-400">Active • Last scan: Just now</p>
-                        </div>
-                      </div>
-                      <button className="px-3 py-1.5 bg-emerald-500 text-white text-[10px] font-bold rounded-lg uppercase">Re-Calibrate</button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">{t.systemLanguage}</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      {[
-                        { code: 'en', label: 'English' },
-                        { code: 'ta', label: 'தமிழ்' },
-                        { code: 'hi', label: 'हिन्दी' }
-                      ].map(l => (
-                        <button key={l.code} onClick={() => setLang(l.code as Language)} className={cn("p-4 rounded-2xl border flex items-center justify-center font-medium transition-all", lang === l.code ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-600 dark:text-emerald-400" : "bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-500 dark:text-white/40 hover:bg-white/80 dark:hover:bg-white/10")}>
-                          {l.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-8 border-t border-gray-200 dark:border-white/5">
-                    <button onClick={() => setUser(null)} className="w-full py-4 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-                      <LogOut size={18} /> {t.signOutCommandCenter}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </main>
 
